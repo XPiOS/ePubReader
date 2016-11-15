@@ -1,0 +1,18 @@
+
+[{ "color" : "default",
+  "size" : 16,
+  "type" : "p"
+  },
+  { "color" : "default",
+  "size" : 22,
+  "type" : "h1"
+  },
+  { "color" : "default",
+  "size" : 22,
+  "type" : "h2"
+  },
+  { "color" : "default",
+  "size" : 22,
+  "type" : "h3"
+  },
+  ]
