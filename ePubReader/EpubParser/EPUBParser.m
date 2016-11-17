@@ -73,6 +73,10 @@
                 if ([contentNodes count] > 0) {
                     GDataXMLElement *nodeContent = contentNodes[0];
                     ncx_src                      = [[nodeContent attributeForName:@"ncx:src"] stringValue];
+                    NSRange range = [ncx_src rangeOfString:@"html"];
+                    if (range.location != NSNotFound) {
+                        ncx_src = [ncx_src substringToIndex:range.length + range.location];
+                    }
                 }
                 if (ncx_src.length > 0) {
                     NSInteger lastSlash     = [_OPFPath rangeOfString:@"/" options:NSBackwardsSearch].location;
@@ -101,42 +105,55 @@
         GDataXMLDocument *opfXmlDoc = [[GDataXMLDocument alloc] initWithData:xmlData options:0 error:&err];
         if ([err code] == 0) {
             GDataXMLElement *root  = [opfXmlDoc rootElement];
-            NSArray *bodyArray = [root elementsForName:@"body"];
-            for (GDataXMLElement *body in bodyArray) {
-                NSArray *bodyChildrenArray = [body children];
-                for (GDataXMLElement *divChild in bodyChildrenArray) {
-                    if ([[divChild name] isEqualToString:@"div"]) {
-                        NSArray *divChildrenArray = [divChild children];
-                        for (GDataXMLElement *item in divChildrenArray) {
-                            NSString *localName  = [item localName];
-                            NSString *content;
-                            if ([localName isEqualToString:@"img"]) {
-                                content                 = [[item attributeForName:@"src"] stringValue];
-                                NSInteger lastSlash     = [chapterFilePath rangeOfString:@"/" options:NSBackwardsSearch].location;
-                                NSString *ebookBasePath = [chapterFilePath substringToIndex:(lastSlash +1)];
-                                content                 = [NSString stringWithFormat:@"%@%@", ebookBasePath, content];
-                                
-                            } else if ([localName isEqualToString:@"h1"] || [localName isEqualToString:@"h2"] || [localName isEqualToString:@"h3"]) {
-                                content = [item stringValue];
-                                content = [content formatTitleString:content];
-                            } else if ([localName isEqualToString:@"p"]) {
-                                content = [item stringValue];
-                                content = [content formatContentString:content];
-                            }
-                            if (content) {
-                                NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-                                dic[@"key"]              = localName;
-                                dic[@"content"]          = content;
-                                [chapterContentArray addObject:dic];
-                            }
-                            
-                        }
-                    }
-                }
-            }
+            [self addItem:root array:chapterContentArray chapterFilePath:chapterFilePath];
         }
     }
     return chapterContentArray;
+}
+
+- (void)addItem:(GDataXMLElement *)element array:(NSMutableArray *)array chapterFilePath:(NSString *)chapterFilePath {
+    NSString *content;
+    NSString *localName;
+    NSArray *elementArray = [element children];
+    if (elementArray.count <= 0) {
+        localName = [element localName];
+        content   = [element stringValue];
+        content   = [content formatContentString:content];
+        if (content && ![content isEqualToString:@"　　\n"]) {
+            NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+            dic[@"key"]              = localName;
+            dic[@"content"]          = content;
+            [array addObject:dic];
+        }
+    }
+    for (GDataXMLElement *item in elementArray) {
+         localName = [item localName];
+        if ([localName isEqualToString:@"head"]) {
+            continue;
+        } else if ([localName isEqualToString:@"img"]) {
+            content                 = [[item attributeForName:@"src"] stringValue];
+            NSInteger lastSlash     = [chapterFilePath rangeOfString:@"/" options:NSBackwardsSearch].location;
+            NSString *ebookBasePath = [chapterFilePath substringToIndex:(lastSlash +1)];
+            content                 = [NSString stringWithFormat:@"%@%@", ebookBasePath, content];
+            if (content) {
+                NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+                dic[@"key"]              = localName;
+                dic[@"content"]          = content;
+                [array addObject:dic];
+            }
+        } else if ([localName isEqualToString:@"h1"] || [localName isEqualToString:@"h2"] || [localName isEqualToString:@"h3"]) {
+            content = [item stringValue];
+            content = [content formatTitleString:content];
+            if (content && ![content isEqualToString:@"\n"]) {
+                NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+                dic[@"key"]              = localName;
+                dic[@"content"]          = content;
+                [array addObject:dic];
+            }
+        } else {
+            [self addItem:item array:array chapterFilePath:chapterFilePath];
+        }
+    }
 }
 
 #pragma mark 获取ncx文件位置

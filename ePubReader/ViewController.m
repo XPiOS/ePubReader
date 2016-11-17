@@ -45,7 +45,7 @@
     _currentChapter                = 0;
     _config                        = [[CoreTextConfig alloc] init];
     
-    NSString * _ePubName           = @"细说明朝";
+    NSString * _ePubName           = @"与自己对话：曼德拉自传(中信正版)";
     _ePubParser                    = [[EPUBParser alloc] init];
     // 文件地址
     NSArray *searchPaths           = NSSearchPathForDirectoriesInDomains(
@@ -57,19 +57,19 @@
     
     _catalogArray                  = [_ePubParser epubCatalogWithEpubFile:fileFullPath WithUnzipFolder:_unzipPath];
     _pageArray                     = [self pagingChapter:_currentChapter];
-    
-    _pageViewController            = [[UIPageViewController alloc] init];
-    _pageViewController.delegate   = self;
-    _pageViewController.dataSource = self;
-    [self addChildViewController:_pageViewController];
-    [self.view addSubview:_pageViewController.view];
     _currentVC                     = [self createNextViewController:_currentPage countPage:_countPage];
-    [_pageViewController setViewControllers:@[_currentVC]
-                                  direction:UIPageViewControllerNavigationDirectionForward
-                                   animated:NO
-                                 completion:^(BOOL finished) {
-                                 }];
-    
+    if (_currentVC) {
+        _pageViewController            = [[UIPageViewController alloc] init];
+        _pageViewController.delegate   = self;
+        _pageViewController.dataSource = self;
+        [self addChildViewController:_pageViewController];
+        [self.view addSubview:_pageViewController.view];
+        [_pageViewController setViewControllers:@[_currentVC]
+                                      direction:UIPageViewControllerNavigationDirectionForward
+                                       animated:NO
+                                     completion:^(BOOL finished) {
+                                     }];
+    }
 }
 
 - (NSMutableArray *)pagingChapter:(NSInteger)currentChapter {
