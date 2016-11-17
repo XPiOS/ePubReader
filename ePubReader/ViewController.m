@@ -12,6 +12,7 @@
 #import "CoreTextDisplayView.h"
 #import "CoreTextFrameParser.h"
 #import "CoreTextPaging.h"
+#import "MyView.h"
 
 @interface ViewController ()<CoreTextDisplayViewDelegate,UIPageViewControllerDataSource,UIPageViewControllerDelegate>
 
@@ -35,41 +36,59 @@
     UIImageView *_imageView;
     CGRect _imageRect;
     
+    
+    
 }
-
+- (void)clickButton {
+    if (_myView) {
+        [_myView removeFromSuperview];
+        _myView = nil;
+    } else {
+        _myView = [[MyView alloc] initWithFrame:CGRectMake(300, 300, 200, 200)];
+        _myView.backgroundColor = [UIColor blueColor];
+        [self.view addSubview:_myView];
+    }
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _currentPage                   = 0;
-    _countPage                     = 0;
-    _currentChapter                = 0;
-    _config                        = [[CoreTextConfig alloc] init];
+    UIButton *button = [UIButton buttonWithType:0];
+    button.frame = CGRectMake(100, 100, 100, 100);
+    button.backgroundColor = [UIColor redColor];
+    [button addTarget:self action:@selector(clickButton) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button];
     
-    NSString * _ePubName           = @"与自己对话：曼德拉自传(中信正版)";
-    _ePubParser                    = [[EPUBParser alloc] init];
-    // 文件地址
-    NSArray *searchPaths           = NSSearchPathForDirectoriesInDomains(
-                                                                         NSLibraryDirectory,
-                                                                         NSUserDomainMask,
-                                                                         YES);
-    NSString * _unzipPath          = [[NSString alloc] initWithFormat:@"%@/%@",[searchPaths objectAtIndex:0],_ePubName];
-    NSString *fileFullPath         = [[NSBundle mainBundle] pathForResource:_ePubName ofType:@"epub" inDirectory:nil];
     
-    _catalogArray                  = [_ePubParser epubCatalogWithEpubFile:fileFullPath WithUnzipFolder:_unzipPath];
-    _pageArray                     = [self pagingChapter:_currentChapter];
-    _currentVC                     = [self createNextViewController:_currentPage countPage:_countPage];
-    if (_currentVC) {
-        _pageViewController            = [[UIPageViewController alloc] init];
-        _pageViewController.delegate   = self;
-        _pageViewController.dataSource = self;
-        [self addChildViewController:_pageViewController];
-        [self.view addSubview:_pageViewController.view];
-        [_pageViewController setViewControllers:@[_currentVC]
-                                      direction:UIPageViewControllerNavigationDirectionForward
-                                       animated:NO
-                                     completion:^(BOOL finished) {
-                                     }];
-    }
+//    _currentPage                   = 0;
+//    _countPage                     = 0;
+//    _currentChapter                = 0;
+//    _config                        = [[CoreTextConfig alloc] init];
+//    
+//    NSString * _ePubName           = @"与自己对话：曼德拉自传(中信正版)";
+//    _ePubParser                    = [[EPUBParser alloc] init];
+//    // 文件地址
+//    NSArray *searchPaths           = NSSearchPathForDirectoriesInDomains(
+//                                                                         NSLibraryDirectory,
+//                                                                         NSUserDomainMask,
+//                                                                         YES);
+//    NSString * _unzipPath          = [[NSString alloc] initWithFormat:@"%@/%@",[searchPaths objectAtIndex:0],_ePubName];
+//    NSString *fileFullPath         = [[NSBundle mainBundle] pathForResource:_ePubName ofType:@"epub" inDirectory:nil];
+//    
+//    _catalogArray                  = [_ePubParser epubCatalogWithEpubFile:fileFullPath WithUnzipFolder:_unzipPath];
+//    _pageArray                     = [self pagingChapter:_currentChapter];
+//    _currentVC                     = [self createNextViewController:_currentPage countPage:_countPage];
+//    if (_currentVC) {
+//        _pageViewController            = [[UIPageViewController alloc] init];
+//        _pageViewController.delegate   = self;
+//        _pageViewController.dataSource = self;
+//        [self addChildViewController:_pageViewController];
+//        [self.view addSubview:_pageViewController.view];
+//        [_pageViewController setViewControllers:@[_currentVC]
+//                                      direction:UIPageViewControllerNavigationDirectionForward
+//                                       animated:NO
+//                                     completion:^(BOOL finished) {
+//                                     }];
+//    }
 }
 
 - (NSMutableArray *)pagingChapter:(NSInteger)currentChapter {
