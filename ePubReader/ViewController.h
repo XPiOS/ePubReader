@@ -7,12 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MyView.h"
 
-@interface ViewController : UIViewController {
-   
-}
-@property (nonatomic, strong)  MyView *myView;
+@interface ViewController : UIViewController 
 
 @end
 

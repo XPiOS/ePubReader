@@ -14,6 +14,7 @@
 @implementation EPUBParser {
     NSString *_OPFPath;
     NSString *_NCXPath;
+    NSString *_coverString;
 }
 
 #pragma mark 得到epub相关信息
@@ -28,8 +29,8 @@
         if ([err code] == 0) {
             GDataXMLElement *root  = [opfXmlDoc rootElement];
             NSArray *metadataArray = [root elementsForName:@"metadata"];
-            for (GDataXMLElement *item in metadataArray) {
-                NSArray *childrenArray = [item children];
+            for (GDataXMLElement *metadata in metadataArray) {
+                NSArray *childrenArray = [metadata children];
                 for (GDataXMLElement *child in childrenArray) {
                     NSString *localName  = [child localName];
                     NSString *content    = [child stringValue];
@@ -48,9 +49,38 @@
 }
 #pragma mark 得到目录数组
 - (NSMutableArray *)epubCatalogWithEpubFile:(NSString *)epubFilePath WithUnzipFolder:(NSString *)unzipFolder {
+    
     NSMutableArray *catalogArray = [NSMutableArray array];
     _OPFPath = [self opfFilePathWithEpubFile:epubFilePath WithUnzipFolder:unzipFolder];
     _NCXPath = [self ncxFilePathWithUnzipFolder:unzipFolder];
+    
+    // 得到封面地址
+    NSMutableDictionary *epubInfo = [NSMutableDictionary dictionary];
+    NSData *xmlOPFData               = [[NSData alloc] initWithContentsOfFile:_OPFPath];
+    if (xmlOPFData) {
+        NSError *err                = nil;
+        GDataXMLDocument *opfXmlDoc = [[GDataXMLDocument alloc] initWithData:xmlOPFData options:0 error:&err];
+        if ([err code] == 0) {
+            GDataXMLElement *root           = [opfXmlDoc rootElement];
+            // 获取封面
+            NSError *errXPath               = nil;
+            // 一个协议，遵循这个协议，可以使用一些语法，使搜索更简单（猜测）
+            NSDictionary *namespaceMappings = [NSDictionary dictionaryWithObject:@"http://www.idpf.org/2007/opf" forKey:@"opf"];
+            NSArray* itemsArray = [root nodesForXPath:@"//opf:item" namespaces:namespaceMappings error:&errXPath];
+            for (GDataXMLElement *item in itemsArray) {
+                NSString *localName  = [[item attributeForName:@"id"] stringValue];
+                if ([localName rangeOfString:@"cover"].location != NSNotFound) {
+                    _coverString = [[item attributeForName:@"href"] stringValue];
+                    if (_coverString && [_coverString length]>0) {
+                        NSInteger lastSlash       = [_OPFPath rangeOfString:@"/" options:NSBackwardsSearch].location;
+                        NSString *ebookBasePath   = [_OPFPath substringToIndex:(lastSlash +1)];
+                        _coverString = [NSString stringWithFormat:@"%@%@", ebookBasePath, _coverString];
+                        break;
+                    }
+                }
+            }
+        }
+    }
     
     NSData *xmlData            = [[NSData alloc] initWithContentsOfFile:_NCXPath];
     if (xmlData) {
@@ -92,12 +122,27 @@
             }
         }
     }
+    NSMutableDictionary *dic = catalogArray[0];
+    if (![dic[@"src"] isEqualToString:_coverString]) {
+        NSMutableDictionary *coverDic = [NSMutableDictionary dictionary];
+        coverDic[@"src"]              = _coverString;
+        coverDic[@"text"]             = @"封面";
+        [catalogArray insertObject:coverDic atIndex:0];
+    }
     return catalogArray;
 }
 
 #pragma mark 解析章节内容
 - (NSMutableArray *)epubChapterParserWithChapterFile:(NSString *)chapterFilePath {
     NSMutableArray *chapterContentArray = [NSMutableArray array];
+    
+    if ([chapterFilePath rangeOfString:@"html"].location == NSNotFound) {
+        NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+        dic[@"key"]              = @"img";
+        dic[@"content"]          = chapterFilePath;
+        [chapterContentArray addObject:dic];
+        return chapterContentArray;
+    }
     
     NSData *xmlData       = [[NSData alloc] initWithContentsOfFile:chapterFilePath];
     if (xmlData) {

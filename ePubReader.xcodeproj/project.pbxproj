@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7710C5931DDEA52100661FC2 /* 狼图腾(正版).epub in Resources */ = {isa = PBXBuildFile; fileRef = 7710C5921DDEA52100661FC2 /* 狼图腾(正版).epub */; };
 		7730C29A1DDAF2230021365F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7730C2991DDAF2230021365F /* main.m */; };
 		7730C29D1DDAF2230021365F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7730C29C1DDAF2230021365F /* AppDelegate.m */; };
 		7730C2A01DDAF2230021365F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7730C29F1DDAF2230021365F /* ViewController.m */; };
@@ -39,10 +40,10 @@
 		7730C2F91DDAF41E0021365F /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7730C2F81DDAF41E0021365F /* libz.tbd */; };
 		7730C2FE1DDAF8860021365F /* 为人处世曾国藩.epub in Resources */ = {isa = PBXBuildFile; fileRef = 7730C2FD1DDAF8860021365F /* 为人处世曾国藩.epub */; };
 		7730C3001DDB04F80021365F /* 与自己对话：曼德拉自传(中信正版).epub in Resources */ = {isa = PBXBuildFile; fileRef = 7730C2FF1DDB04F80021365F /* 与自己对话：曼德拉自传(中信正版).epub */; };
-		775FA5EF1DDD8A1D00E59B51 /* MyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 775FA5EE1DDD8A1D00E59B51 /* MyView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7710C5921DDEA52100661FC2 /* 狼图腾(正版).epub */ = {isa = PBXFileReference; lastKnownFileType = file; path = "狼图腾(正版).epub"; sourceTree = "<group>"; };
 		7730C2951DDAF2230021365F /* ePubReader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ePubReader.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7730C2991DDAF2230021365F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7730C29B1DDAF2230021365F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -97,8 +98,6 @@
 		7730C2F81DDAF41E0021365F /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		7730C2FD1DDAF8860021365F /* 为人处世曾国藩.epub */ = {isa = PBXFileReference; lastKnownFileType = file; path = "为人处世曾国藩.epub"; sourceTree = "<group>"; };
 		7730C2FF1DDB04F80021365F /* 与自己对话：曼德拉自传(中信正版).epub */ = {isa = PBXFileReference; lastKnownFileType = file; path = "与自己对话：曼德拉自传(中信正版).epub"; sourceTree = "<group>"; };
-		775FA5ED1DDD8A1D00E59B51 /* MyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyView.h; sourceTree = "<group>"; };
-		775FA5EE1DDD8A1D00E59B51 /* MyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +116,7 @@
 		7730C28C1DDAF2220021365F = {
 			isa = PBXGroup;
 			children = (
+				7710C5921DDEA52100661FC2 /* 狼图腾(正版).epub */,
 				7730C2FF1DDB04F80021365F /* 与自己对话：曼德拉自传(中信正版).epub */,
 				7730C2F41DDAF2DD0021365F /* 细说明朝.epub */,
 				7730C2FD1DDAF8860021365F /* 为人处世曾国藩.epub */,
@@ -150,8 +150,6 @@
 				7730C2AC1DDAF2230021365F /* Info.plist */,
 				7730C2A41DDAF2230021365F /* ePubReader.xcdatamodeld */,
 				7730C2981DDAF2230021365F /* Supporting Files */,
-				775FA5ED1DDD8A1D00E59B51 /* MyView.h */,
-				775FA5EE1DDD8A1D00E59B51 /* MyView.m */,
 			);
 			path = ePubReader;
 			sourceTree = "<group>";
@@ -311,6 +309,7 @@
 				7730C2EB1DDAF2740021365F /* ChangeLogUnzip in Resources */,
 				7730C2FE1DDAF8860021365F /* 为人处世曾国藩.epub in Resources */,
 				7730C2AB1DDAF2230021365F /* LaunchScreen.storyboard in Resources */,
+				7710C5931DDEA52100661FC2 /* 狼图腾(正版).epub in Resources */,
 				7730C2A81DDAF2230021365F /* Assets.xcassets in Resources */,
 				7730C2A31DDAF2230021365F /* Main.storyboard in Resources */,
 				7730C2CE1DDAF24A0021365F /* CoreTextTemplateFile.json in Resources */,
@@ -330,7 +329,6 @@
 				7730C2EE1DDAF2740021365F /* mztools.c in Sources */,
 				7730C2E81DDAF2740021365F /* EPUBParser.m in Sources */,
 				7730C2A01DDAF2230021365F /* ViewController.m in Sources */,
-				775FA5EF1DDD8A1D00E59B51 /* MyView.m in Sources */,
 				7730C2EF1DDAF2740021365F /* unzip.c in Sources */,
 				7730C2CF1DDAF24A0021365F /* CoreTextUtils.m in Sources */,
 				7730C2F11DDAF2740021365F /* ZipArchive.m in Sources */,
