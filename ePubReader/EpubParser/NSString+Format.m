@@ -10,6 +10,8 @@
 
 #define kStringMaxLength  1024
 
+static NSCharacterSet *set;
+
 @implementation NSString (Format)
 
 #pragma mark - 内容文本处理
@@ -59,51 +61,12 @@
 
 #pragma mark - 处理字符串内容
 - (NSString *)processingParagraphContent:(NSString *)paragraphStr {
-    // 将字符串拆分成最长为1024的子串
-    NSString *paragraphContent = [[NSString alloc] init];
-    NSInteger stringPointer    = 0;
-    while (YES) {
-        NSRange range;
-        if (stringPointer + kStringMaxLength > paragraphStr.length) {
-            NSString *str    = [paragraphStr substringFromIndex:stringPointer];
-            str              = [self stringProcessing:str];
-            paragraphContent = [paragraphContent stringByAppendingString:str];
-            break;
-        } else {
-            range.location   = stringPointer;
-            range.length     = kStringMaxLength;
-            NSString *str    = [paragraphStr substringWithRange:range];
-            paragraphContent = [paragraphContent stringByAppendingString:[self stringProcessing:str]];
-            stringPointer    += kStringMaxLength;
-        }
-    }
-    return paragraphContent;
-}
-
-#pragma mark - 格式化章节内容片段
-- (NSString *)stringProcessing:(NSString *)str {
-
-    // 去掉开头空格
-    NSString *headStr;
-    while (str && str.length >= 1) {
-        headStr = [str substringToIndex:1];
-        if ([headStr isEqualToString:@"　"] || [headStr isEqualToString:@"\t"] || [headStr isEqualToString:@" "] || [headStr isEqualToString:@"\r"] || [headStr isEqualToString:@"\n"]) {
-            str = [str substringFromIndex:1];
-        } else {
-            break;
-        }
-    }
-    // 去掉结尾空格
-    NSString *tailStr;
-    while (str && str.length > 1) {
-        tailStr = [str substringFromIndex:str.length - 1];
-        if ([headStr isEqualToString:@"　"] || [headStr isEqualToString:@"\t"] || [headStr isEqualToString:@" "] || [headStr isEqualToString:@"\r"] || [headStr isEqualToString:@"\n"]) {
-            str = [str substringToIndex:str.length - 1];
-        } else {
-            break;
-        }
-    }
-    return str;
+    static dispatch_once_t predicate;
+    dispatch_once(&predicate, ^{
+        set = [NSCharacterSet characterSetWithCharactersInString:@"　 \t\r\n"];
+    });
+    paragraphStr = [paragraphStr stringByTrimmingCharactersInSet:set];
+    return paragraphStr;
 }
 
 @end
